@@ -12,6 +12,30 @@ const schema = a.schema({
       content: a.string(),
     })
     .authorization((allow) => [allow.publicApiKey()]),
+  Question: a
+    .model({
+      id: a.id().required(),
+      question: a.string().required(),
+      comments: a.hasMany("Comment", "questionId"),
+    })
+    .authorization((allow) => [
+      allow
+        // .group("GROUP_UUID")
+        .authenticated()
+        .to(["create", "read", "update"]),
+    ]),
+  Comment: a
+    .model({
+      id: a.id().required(),
+      content: a.string().required(),
+      owner: a.string(),
+      questionId: a.id(),
+      question: a.belongsTo("Question", "questionId"),
+    })
+    .authorization((allow: any) => [
+      allow.owner(),
+      allow.authenticated().to(["read"]),
+    ]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
