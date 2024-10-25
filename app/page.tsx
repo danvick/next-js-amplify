@@ -72,27 +72,29 @@ export default function App() {
 
 "use client";
 
-import { useState, useEffect } from "react";
-import { generateClient } from "aws-amplify/data";
-import type { Schema } from "@/amplify/data/resource";
 import "./../app/app.css";
 import { Amplify } from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
-import { camera } from "@biopassid/face-sdk";
 import React from "react";
 import { uploadData } from "aws-amplify/storage";
-import { getCurrentUser, fetchAuthSession } from "aws-amplify/auth";
 import { Authenticator } from "@aws-amplify/ui-react";
-import { secret } from "@aws-amplify/backend";
+import { fetchAuthSession } from "aws-amplify/auth";
 
 Amplify.configure(outputs);
 
 const App = () => {
   const [file, setFile] = React.useState();
 
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     setFile(event.target.files[0]);
+  };
+
+  const createS3UploadUri = (
+    cognitoIdentityId: string,
+    fileName: string
+  ): string => {
+    return `private/${cognitoIdentityId}/AWS_S3_PRIVATE_USER_FILES_BUCKET_UPLOAD_PREFIX/${fileName}`;
   };
 
   const handleUpload = async () => {
@@ -134,12 +136,5 @@ const App = () => {
     </Authenticator>
   );
 };
-
-export function createS3UploadUri(
-  cognitoIdentityId: string,
-  fileName: string
-): string {
-  return `private/${cognitoIdentityId}/AWS_S3_PRIVATE_USER_FILES_BUCKET_UPLOAD_PREFIX/${fileName}`;
-}
 
 export default App;
