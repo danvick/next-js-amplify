@@ -84,17 +84,10 @@ import { fetchAuthSession } from "aws-amplify/auth";
 Amplify.configure(outputs);
 
 const App = () => {
-  const [file, setFile] = React.useState();
+  const [file, setFile] = React.useState<File | undefined>();
 
   const handleChange = (event: any) => {
     setFile(event.target.files[0]);
-  };
-
-  const createS3UploadUri = (
-    cognitoIdentityId: string,
-    fileName: string
-  ): string => {
-    return `private/${cognitoIdentityId}/AWS_S3_PRIVATE_USER_FILES_BUCKET_UPLOAD_PREFIX/${fileName}`;
   };
 
   const handleUpload = async () => {
@@ -103,15 +96,11 @@ const App = () => {
         const session = await fetchAuthSession();
         console.log(session);
         const result = await uploadData({
-          key: createS3UploadUri(session.identityId ?? "guest", file.name),
-          // path: ({ identityId }) => {
-          //   console.log(identityId);
-          //   return `private/${identityId}/AWS_S3_PRIVATE_USER_FILES_BUCKET_UPLOAD_PREFIX/${file.name}`;
-          // },
-          data: file,
-          options: {
-            accessLevel: "private",
+          path: ({ identityId }) => {
+            console.log(identityId);
+            return `private/${identityId}/AWS_S3_PRIVATE_USER_FILES_BUCKET_UPLOAD_PREFIX/${file.name}`;
           },
+          data: file,
         }).result;
 
         console.log("File uploaded successfully", result);
