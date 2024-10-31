@@ -87,6 +87,7 @@ const App = () => {
   const [file, setFile] = React.useState<File | undefined>();
 
   const handleChange = (event: any) => {
+    console.log(process.env['NEXT_TEST']);
     setFile(event.target.files[0]);
   };
 
