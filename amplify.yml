@@ -9,6 +9,9 @@ frontend:
   phases:
     build:
       commands:
+        - env | grep -e NEXT_ >> .env.production
+        - env | grep -e NEXT_ >> .env
+        - tail -n 100 .env
         - npm run build
   artifacts:
     baseDirectory: .next
