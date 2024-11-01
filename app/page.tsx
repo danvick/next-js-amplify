@@ -88,6 +88,7 @@ const App = () => {
 
   const handleChange = (event: any) => {
     console.log(process.env['NEXT_TEST']);
+    console.log(process.env['NEXT_PUBLIC_TEST']);
     setFile(event.target.files[0]);
   };
 
